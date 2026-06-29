@@ -237,4 +237,198 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('API error, loading fallback release info:', err);
       renderReleases(fallbackReleases);
     });
+
+  // --- HERO INTERACTIVE 3D LOGO & PARTICLE SYSTEM ---
+  const canvas = document.getElementById('hero-interactive-canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = canvas.offsetWidth;
+    let height = canvas.height = canvas.offsetHeight;
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+    });
+
+    // Particle class
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = 1 + Math.random() * 2.5;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.speedY = (Math.random() - 0.5) * 0.4;
+        // Purple, Pink, Violet glowing tones
+        const hues = [260, 280, 290, 310, 330];
+        this.hue = hues[Math.floor(Math.random() * hues.length)];
+        this.alpha = 0.15 + Math.random() * 0.45;
+        this.angle = Math.random() * Math.PI * 2;
+        this.orbitRadius = 60 + Math.random() * 140;
+        this.orbitSpeed = (Math.random() - 0.5) * 0.006;
+      }
+
+      update(logoX, logoY, mouseX, mouseY) {
+        // Normal drift or orbit around logo
+        if (logoX && logoY) {
+          this.angle += this.orbitSpeed;
+          const targetX = logoX + Math.cos(this.angle) * this.orbitRadius;
+          const targetY = logoY + Math.sin(this.angle) * this.orbitRadius;
+          this.x += (targetX - this.x) * 0.025;
+          this.y += (targetY - this.y) * 0.025;
+        } else {
+          this.x += this.speedX;
+          this.y += this.speedY;
+        }
+
+        // Mouse reaction (repelled by mouse)
+        if (mouseX !== null && mouseY !== null) {
+          const dx = this.x - mouseX;
+          const dy = this.y - mouseY;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 130) {
+            const force = (130 - dist) / 130;
+            this.x += (dx / dist) * force * 3.5;
+            this.y += (dy / dist) * force * 3.5;
+          }
+        }
+
+        // Boundary checks (re-wrap if drift too far)
+        if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${this.hue}, 95%, 70%, ${this.alpha})`;
+        ctx.shadowBlur = this.size * 4;
+        ctx.shadowColor = `hsla(${this.hue}, 95%, 70%, 0.85)`;
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Initialize particles
+    const particleCount = 80;
+    const particles = Array.from({ length: particleCount }, () => new Particle());
+
+    // Load logo image
+    const logoImg = new Image();
+    logoImg.src = 'logo.png';
+    let logoLoaded = false;
+    logoImg.onload = () => {
+      logoLoaded = true;
+    };
+
+    // Interaction variables
+    let mouse = { x: 0, y: 0, targetX: null, targetY: null };
+    let logoRotation = { x: 0, y: 0 };
+    let logoPosition = { x: width * 0.72, y: height * 0.45 };
+    let bobbingAngle = 0;
+
+    // Listen to mousemove on parent header
+    const header = canvas.parentElement;
+    header.addEventListener('mousemove', (e) => {
+      const rect = header.getBoundingClientRect();
+      mouse.targetX = e.clientX - rect.left;
+      mouse.targetY = e.clientY - rect.top;
+      
+      // Calculate 3D tilt based on mouse offset from center
+      const centerX = width / 2;
+      const centerY = height / 2;
+      logoRotation.y = ((e.clientX - rect.left) - centerX) / centerX * 0.35; // max 0.35 rad tilt
+      logoRotation.x = -((e.clientY - rect.top) - centerY) / centerY * 0.35;
+    });
+
+    header.addEventListener('mouseleave', () => {
+      mouse.targetX = null;
+      mouse.targetY = null;
+      logoRotation.x = 0;
+      logoRotation.y = 0;
+    });
+
+    // Main animation loop
+    const animate = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      // Smooth mouse tracking
+      if (mouse.targetX !== null && mouse.targetY !== null) {
+        mouse.x += (mouse.targetX - mouse.x) * 0.1;
+        mouse.y += (mouse.targetY - mouse.y) * 0.1;
+      } else {
+        mouse.x += (0 - mouse.x) * 0.05;
+        mouse.y += (0 - mouse.y) * 0.05;
+      }
+
+      // Logo placement in background (shifted to center-right, matching mockup background)
+      const isMobile = width < 992;
+      const logoX = isMobile ? width / 2 : width * 0.76;
+      const logoY = isMobile ? height * 0.32 : height * 0.42;
+      
+      logoPosition.x += (logoX - logoPosition.x) * 0.05;
+      logoPosition.y += (logoY - logoPosition.y) * 0.05;
+
+      // Bobbing floating motion
+      bobbingAngle += 0.015;
+      const currentLogoY = logoPosition.y + Math.sin(bobbingAngle) * 12;
+
+      // Draw particles behind logo
+      particles.forEach(p => {
+        p.update(logoPosition.x, currentLogoY, mouse.targetX !== null ? mouse.x : null, mouse.targetY !== null ? mouse.y : null);
+        p.draw();
+      });
+
+      // Draw 3D-tilting Logo Image
+      if (logoLoaded) {
+        ctx.save();
+        ctx.translate(logoPosition.x, currentLogoY);
+        
+        // 3D perspective effect via transform matrix
+        ctx.transform(
+          1, 
+          logoRotation.y * 0.22, 
+          logoRotation.x * 0.22, 
+          1, 
+          0, 
+          0
+        );
+
+        // Logo Bobbing Tilt
+        ctx.rotate(logoRotation.y * 0.3);
+
+        // Draw shadow glow behind the logo
+        ctx.beginPath();
+        ctx.arc(0, 0, 110, 0, Math.PI * 2);
+        const glow = ctx.createRadialGradient(0, 0, 10, 0, 0, 130);
+        glow.addColorStop(0, 'rgba(145, 70, 255, 0.28)');
+        glow.addColorStop(0.5, 'rgba(239, 68, 68, 0.09)');
+        glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = glow;
+        ctx.fill();
+
+        // Draw multiple offset layers of logo for holograph/3D depth effect
+        const logoSize = 170;
+        ctx.globalAlpha = 0.3;
+        ctx.drawImage(logoImg, -logoSize/2 - logoRotation.y * 12, -logoSize/2 - logoRotation.x * 12, logoSize, logoSize);
+        ctx.globalAlpha = 0.55;
+        ctx.drawImage(logoImg, -logoSize/2 - logoRotation.y * 6, -logoSize/2 - logoRotation.x * 6, logoSize, logoSize);
+        ctx.globalAlpha = 1.0;
+        ctx.drawImage(logoImg, -logoSize/2, -logoSize/2, logoSize, logoSize);
+        
+        ctx.restore();
+      }
+
+      requestAnimationFrame(animate);
+    };
+
+    // Start loop
+    animate();
+  }
 });
