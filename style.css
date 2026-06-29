@@ -1090,3 +1090,158 @@ a {
   z-index: 1;
   pointer-events: none;
 }
+
+/* Donation Section for Venezuela */
+.donation-section {
+  padding: 100px 0;
+  background: radial-gradient(180deg, #09090d 0%, #07070a 100%);
+  position: relative;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.donation-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.donation-message-box {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.donation-feature-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 30px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+}
+
+.donation-heading {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+.donation-intro {
+  font-size: 16px;
+  color: #e5e7eb;
+  font-weight: 600;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.donation-text {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 24px;
+  text-align: justify;
+}
+
+.donation-guarantee {
+  background: rgba(168, 85, 247, 0.05);
+  border-left: 4px solid var(--primary);
+  padding: 16px;
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  color: #f3e8ff;
+  line-height: 1.5;
+}
+
+.donation-methods-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.donation-method-card {
+  background: #111116;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.donation-method-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.donation-method-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.donation-method-title.yape { color: #00e5ff; }
+.donation-method-title.paypal { color: #0079c1; }
+
+.donation-qr-img {
+  width: 160px;
+  height: 160px;
+  border-radius: 8px;
+  border: 3px solid #fff;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  display: inline-block;
+}
+
+.donation-method-card p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.donation-paypal-btn {
+  background: linear-gradient(135deg, #0079c1, #00457c);
+  color: #fff !important;
+  border: 1px solid #00457c;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  width: 100%;
+  justify-content: center;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0, 121, 193, 0.25);
+}
+
+.donation-paypal-btn:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 15px rgba(0, 121, 193, 0.4);
+}
+
+@media (max-width: 768px) {
+  .donation-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
