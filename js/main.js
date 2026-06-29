@@ -369,8 +369,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Logo placement in background (shifted to center-right, matching mockup background)
       const isMobile = width < 992;
-      const logoX = isMobile ? width / 2 : width * 0.76;
-      const logoY = isMobile ? height * 0.32 : height * 0.42;
+      const logoX = isMobile ? width / 2 : width * 0.84;
+      const logoY = isMobile ? height * 0.25 : height * 0.30;
       
       logoPosition.x += (logoX - logoPosition.x) * 0.05;
       logoPosition.y += (logoY - logoPosition.y) * 0.05;
@@ -405,22 +405,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Draw shadow glow behind the logo
         ctx.beginPath();
-        ctx.arc(0, 0, 110, 0, Math.PI * 2);
-        const glow = ctx.createRadialGradient(0, 0, 10, 0, 0, 130);
-        glow.addColorStop(0, 'rgba(145, 70, 255, 0.28)');
-        glow.addColorStop(0.5, 'rgba(239, 68, 68, 0.09)');
+        ctx.arc(0, 0, 95, 0, Math.PI * 2);
+        const glow = ctx.createRadialGradient(0, 0, 10, 0, 0, 115);
+        glow.addColorStop(0, 'rgba(145, 70, 255, 0.35)');
+        glow.addColorStop(0.5, 'rgba(239, 68, 68, 0.12)');
         glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = glow;
         ctx.fill();
 
+        // 1. Draw glowing circular border
+        ctx.beginPath();
+        ctx.arc(0, 0, 68, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(145, 70, 255, 0.65)';
+        ctx.lineWidth = 4;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#9146ff';
+        ctx.stroke();
+        ctx.shadowBlur = 0; // Reset shadow
+
+        // 2. Draw glassmorphism background inside circle
+        ctx.fillStyle = 'rgba(15, 15, 21, 0.75)';
+        ctx.fill();
+
+        // 3. Clip and draw logo image inside the circle to hide square edges
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0, 0, 66, 0, Math.PI * 2);
+        ctx.clip();
+        
+        const logoSize = 132;
         // Draw multiple offset layers of logo for holograph/3D depth effect
-        const logoSize = 170;
-        ctx.globalAlpha = 0.3;
-        ctx.drawImage(logoImg, -logoSize/2 - logoRotation.y * 12, -logoSize/2 - logoRotation.x * 12, logoSize, logoSize);
-        ctx.globalAlpha = 0.55;
-        ctx.drawImage(logoImg, -logoSize/2 - logoRotation.y * 6, -logoSize/2 - logoRotation.x * 6, logoSize, logoSize);
+        ctx.globalAlpha = 0.35;
+        ctx.drawImage(logoImg, -logoSize/2 - logoRotation.y * 10, -logoSize/2 - logoRotation.x * 10, logoSize, logoSize);
+        ctx.globalAlpha = 0.6;
+        ctx.drawImage(logoImg, -logoSize/2 - logoRotation.y * 5, -logoSize/2 - logoRotation.x * 5, logoSize, logoSize);
         ctx.globalAlpha = 1.0;
         ctx.drawImage(logoImg, -logoSize/2, -logoSize/2, logoSize, logoSize);
+        ctx.restore();
         
         ctx.restore();
       }
