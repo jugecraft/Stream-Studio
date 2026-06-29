@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StreamStudio - Professional Multi-Platform Broadcasting Software</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Transmite simultáneamente a Twitch, YouTube y Kick con StreamStudio. Composición de escenas a 60 FPS, mezclador de audio avanzado con filtros DSP y aceleración de hardware.">
+  <meta name="keywords" content="broadcasting, live stream, multistream, obs, twitch, youtube, kick, mixer, dsp, software">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Floating Navigation Bar -->
+  <nav class="glass-nav">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <span class="brand-name">Stream<span>Studio</span></span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#features">Características</a></li>
+        <li><a href="#simulator">Mezclador DSP</a></li>
+        <li><a href="#releases">Lanzamientos</a></li>
+        <li><a href="https://github.com/jugecraft/Stream-Studio/releases" target="_blank" class="github-link"><i data-lucide="github"></i> Releases</a></li>
+      </ul>
+      <a href="https://github.com/jugecraft/Stream-Studio/releases" class="btn btn-primary nav-cta">
+        <i data-lucide="download"></i> Descargar v1.0.0
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="hero-bg-glow"></div>
+    <div class="grid-overlay"></div>
+    
+    <div class="container hero-container">
+      <div class="hero-badge animate-fade-in">
+        <span class="badge-dot"></span> Nueva Versión Stable v1.0.0 Disponible
+      </div>
+      
+      <h1 class="hero-title animate-title">
+        La Nueva Era del <span class="glow-text">Multi-Streaming</span> Profesional
+      </h1>
+      
+      <p class="hero-subtitle animate-subtitle">
+        Transmite simultáneamente a <strong>Twitch, YouTube y Kick</strong>. Crea escenas interactivas a 60 FPS con aceleración de hardware, y procesa tu audio con un mezclador DSP de nivel de estudio.
+      </p>
+      
+      <div class="hero-actions animate-actions">
+        <a href="https://github.com/jugecraft/Stream-Studio/releases" class="btn btn-lg btn-primary">
+          <i data-lucide="download"></i> Descargar para Windows
+        </a>
+        <a href="#features" class="btn btn-lg btn-outline">
+          Saber Más <i data-lucide="arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- 3D Perspective App Preview Mockup -->
+      <div class="app-mockup-wrapper animate-mockup">
+        <div class="app-mockup-frame">
+          <div class="mockup-header">
+            <div class="mockup-dots">
+              <span class="dot-r"></span>
+              <span class="dot-y"></span>
+              <span class="dot-g"></span>
+            </div>
+            <div class="mockup-title">StreamStudio v1.0.0 - Escena Activa: Juego Completo</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-sidebar">
+              <div class="sidebar-item active"><i data-lucide="layout"></i></div>
+              <div class="sidebar-item"><i data-lucide="sliders"></i></div>
+              <div class="sidebar-item"><i data-lucide="settings"></i></div>
+            </div>
+            <div class="mockup-main">
+              <div class="mockup-preview">
+                <div class="preview-overlay">
+                  <div class="live-indicator">● EN VIVO</div>
+                  <div class="preview-title">PROGRAMA (VIVO)</div>
+                </div>
+                <!-- Simulated Canvas Content -->
+                <div class="preview-canvas-content">
+                  <div class="sim-camera">
+                    <i data-lucide="video" class="cam-icon"></i>
+                    <span>Cámara Gamer</span>
+                  </div>
+                  <div class="sim-game">
+                    <i data-lucide="gamepad-2" class="game-icon"></i>
+                    <span>Gameplay (Aceleración de Hardware)</span>
+                  </div>
+                  <div class="sim-overlay-text">¡BIENVENIDOS AL STREAM!</div>
+                </div>
+              </div>
+            </div>
+            <div class="mockup-right">
+              <div class="mockup-chat">
+                <div class="chat-header"><i data-lucide="message-square"></i> Chat en Vivo Consolidado</div>
+                <div class="chat-messages">
+                  <div class="chat-msg"><span class="user-twitch">TwitchUser:</span> ¡Se ve increíble la latencia! 🔥</div>
+                  <div class="chat-msg"><span class="user-yt">YTMember:</span> ¿Cuál codificador usas?</div>
+                  <div class="chat-msg"><span class="user-kick">KickMod:</span> Activa el bot de voz porfa</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Features Grid -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Diseñado para la Máxima Calidad</h2>
+        <p class="section-subtitle">Todo lo necesario para transmisiones fluidas, seguras y profesionales en una sola interfaz.</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1 -->
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="layers"></i></div>
+          <h3>Lienzo Interactivo 60 FPS</h3>
+          <p>Compon tus escenas de manera visual. Arrastra, redimensiona y superpone cámaras, pantallas y widgets web con aceleración por GPU.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="shuffle"></i></div>
+          <h3>Multi-Streaming Directo</h3>
+          <p>Transmite de forma simultánea a Twitch, YouTube y Kick codificando una sola vez con hardware NVIDIA NVENC o AMD AMF.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="sliders-horizontal"></i></div>
+          <h3>Mezclador DSP Avanzado</h3>
+          <p>Filtros profesionales de compresión dinámica, puerta de ruido matemática y ecualizadores de 3 bandas para una voz limpia y cristalina.</p>
+        </div>
+        <!-- Feature 4 -->
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="shield-check"></i></div>
+          <h3>Seguridad de Producción</h3>
+          <p>Código protegido con DevTools Chromium totalmente bloqueado para evitar ingeniería inversa o modificaciones accidentales.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive 3D Mixer Simulator Section -->
+  <section class="simulator-section" id="simulator">
+    <div class="hero-bg-glow" style="top: 20%; right: 10%; background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 60%);"></div>
+    <div class="container">
+      <div class="grid grid-2">
+        <div class="sim-info-col">
+          <div class="section-header align-left">
+            <span class="section-badge">Demostración Interactiva</span>
+            <h2 class="section-title">Prueba los Filtros DSP en tu Navegador</h2>
+            <p class="section-subtitle">Experimenta cómo responde el vúmetro digital en tiempo real al aplicar los efectos de procesamiento de sonido de StreamStudio.</p>
+          </div>
+          
+          <ul class="sim-feature-list">
+            <li>
+              <div class="list-icon"><i data-lucide="volume-x"></i></div>
+              <div>
+                <h4>Silenciado Inteligente</h4>
+                <p>Silencia canales individuales al instante. El medidor de señal (VU) caerá automáticamente a -inf dB.</p>
+              </div>
+            </li>
+            <li>
+              <div class="list-icon"><i data-lucide="filter"></i></div>
+              <div>
+                <h4>Puerta de Ruido & Compresores</h4>
+                <p>Estabiliza la modulación de voz para eliminar silbidos e interferencias ambientales en salas con eco.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Simulated Interactive 3D Audio Channel Widget -->
+        <div class="sim-widget-col">
+          <div class="sim-card-3d">
+            <div class="sim-header">
+              <span class="sim-title"><i data-lucide="mic"></i> Micrófono / Auxiliar DSP</span>
+              <span class="sim-db" id="sim-db-text">-inf dB</span>
+            </div>
+            
+            <div class="sim-meters-row">
+              <div class="sim-vu-container">
+                <div class="sim-vu-bar" id="sim-vu-bar"></div>
+                <div class="sim-vu-markers">
+                  <span>0</span>
+                  <span>-10</span>
+                  <span>-20</span>
+                  <span>-30</span>
+                  <span>-50</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="sim-controls">
+              <!-- Mute Button -->
+              <button class="sim-btn-mute" id="sim-mute-btn"><i data-lucide="mic"></i></button>
+              
+              <!-- Volume Slider -->
+              <div class="sim-fader-container">
+                <label>Volumen</label>
+                <input type="range" id="sim-vol-slider" min="0" max="1.5" step="0.01" value="1.0">
+              </div>
+            </div>
+
+            <div class="sim-filters-box">
+              <h5>Filtros Activos</h5>
+              <div class="filter-toggle-row">
+                <label class="filter-chk">
+                  <input type="checkbox" id="chk-sim-gate"> Puerta de Ruido
+                </label>
+                <label class="filter-chk">
+                  <input type="checkbox" id="chk-sim-comp" checked> Compresor
+                </label>
+                <label class="filter-chk">
+                  <input type="checkbox" id="chk-sim-eq"> Ecualizador 3-Bandas
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GitHub Releases Section -->
+  <section class="releases-section" id="releases">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Historial de Lanzamientos</h2>
+        <p class="section-subtitle">Accede a las versiones oficiales, instaladores de producción y notas de desarrollo directamente sincronizados con GitHub.</p>
+      </div>
+
+      <div class="releases-container" id="github-releases-list">
+        <!-- Loader -->
+        <div class="releases-loading">
+          <div class="spinner"></div>
+          <p>Cargando lanzamientos desde GitHub...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="brand">
+          <div class="brand-logo"></div>
+          <span class="brand-name">Stream<span>Studio</span></span>
+        </div>
+        <ul class="footer-links">
+          <li><a href="#features">Características</a></li>
+          <li><a href="#simulator">Prueba Mezclador</a></li>
+          <li><a href="#releases">Releases</a></li>
+          <li><a href="https://github.com/jugecraft/Stream-Studio/releases" target="_blank">Descargas</a></li>
+        </ul>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 StreamStudio. Licencia MIT. Creado para Broadcasters Profesionales.</p>
+        <p class="footer-credit">Desarrollado con pasión para Twitch, YouTube y Kick.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
