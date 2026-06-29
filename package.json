@@ -1,0 +1,56 @@
+{
+  "name": "stream-studio",
+  "version": "1.0.0",
+  "description": "Live streaming studio for Twitch, YouTube and Kick with multi-streaming capability",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "keywords": [
+    "stream",
+    "obs",
+    "electron",
+    "ffmpeg",
+    "multistream"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^42.5.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.antigravity.streamstudio",
+    "productName": "StreamStudio",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "StreamStudio",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
+    },
+    "files": [
+      "**/*",
+      "!dist",
+      "!make-ico.js",
+      "!.git",
+      "!.agents",
+      "!.vscode",
+      "!task.md",
+      "!implementation_plan.md",
+      "!walkthrough.md"
+    ]
+  }
+}

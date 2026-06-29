@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+.agents/
+.vscode/
+make-ico.js
+icon.png
+icon.ico
+*.log

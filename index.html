@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StreamStudio - Multi-Platform Streaming Studio</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons Local -->
+  <script src="js/lucide.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Custom Title Bar (Steam Style) -->
+    <div class="custom-title-bar">
+      <div class="title-bar-left">
+        <i data-lucide="radio" class="logo-icon-small pulse"></i>
+        <span class="title-text">StreamStudio</span>
+        <div class="window-menus">
+          <div class="menu-item" id="menu-file">Archivo
+            <div class="dropdown-menu">
+              <div class="dropdown-item" id="menu-item-settings">Configuración</div>
+              <div class="dropdown-item" id="menu-item-wizard">Asistente de Configuración</div>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-item" id="menu-item-exit">Salir</div>
+            </div>
+          </div>
+          <div class="menu-item" id="menu-edit">Editar
+            <div class="dropdown-menu">
+              <div class="dropdown-item" id="menu-item-studio">Modo Estudio</div>
+              <div class="dropdown-item" id="menu-item-add-audio">Añadir Canal de Audio</div>
+            </div>
+          </div>
+          <div class="menu-item" id="menu-help">Ayuda
+            <div class="dropdown-menu">
+              <div class="dropdown-item" id="menu-item-about">Acerca de StreamStudio</div>
+              <div class="dropdown-item" id="menu-item-terms">Términos y Condiciones</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="title-bar-drag-space"></div>
+      
+      <div class="title-bar-actions">
+        <button class="title-bar-btn" id="win-minimize" title="Minimizar">
+          <i data-lucide="minus"></i>
+        </button>
+        <button class="title-bar-btn" id="win-maximize" title="Maximizar/Restaurar">
+          <i data-lucide="square"></i>
+        </button>
+        <button class="title-bar-btn title-bar-btn-close" id="win-close" title="Cerrar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Top Stats Bar -->
+    <header class="top-bar">
+      
+      <div class="stream-stats">
+        <div class="stat-item" id="stat-status">
+          <span class="status-indicator offline" id="status-indicator"></span>
+          <span class="stat-label">ESTADO:</span>
+          <span class="stat-value" id="status-val">OFFLINE</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-label">TIEMPO:</span>
+          <span class="stat-value font-mono" id="stat-time">00:00:00</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-label">FPS:</span>
+          <span class="stat-value font-mono" id="stat-fps">0.0</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-label">BITRATE:</span>
+          <span class="stat-value font-mono" id="stat-bitrate">0 Kbps</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-label">PERDIDOS:</span>
+          <span class="stat-value font-mono" id="stat-dropped">0 (0.0%)</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-label">CPU:</span>
+          <span class="stat-value font-mono" id="stat-cpu">0%</span>
+        </div>
+      </div>
+
+      <div class="top-bar-platforms">
+        <div class="platform-indicator" id="ind-twitch" title="Twitch">
+          <i data-lucide="twitch"></i>
+        </div>
+        <div class="platform-indicator" id="ind-youtube" title="YouTube">
+          <i data-lucide="youtube"></i>
+        </div>
+        <div class="platform-indicator" id="ind-kick" title="Kick">
+          <i data-lucide="shield-alert" class="kick-icon-fix">K</i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="main-workspace" id="workspace-layout">
+      <!-- Left Panel: Scenes & Sources -->
+      <section class="panel side-panel left-panel">
+        <!-- Scenes Panel -->
+        <div class="panel-section scenes-section">
+          <div class="panel-header">
+            <h3><i data-lucide="layers"></i> ESCENAS</h3>
+            <button class="btn-icon" id="btn-add-scene" title="Añadir Escena">
+              <i data-lucide="plus"></i>
+            </button>
+          </div>
+          <div class="panel-content scrollable">
+            <ul class="item-list" id="scenes-list">
+              <!-- Rendered Dynamically -->
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Sources Panel -->
+        <div class="panel-section sources-section">
+          <div class="panel-header">
+            <h3><i data-lucide="component"></i> FUENTES</h3>
+            <div class="header-actions">
+              <button class="btn-icon" id="btn-source-up" title="Mover Arriba"><i data-lucide="chevron-up"></i></button>
+              <button class="btn-icon" id="btn-source-down" title="Mover Abajo"><i data-lucide="chevron-down"></i></button>
+              <button class="btn-icon" id="btn-add-source-menu" title="Añadir Fuente"><i data-lucide="plus"></i></button>
+            </div>
+            
+            <!-- Source Menu Dropdown -->
+            <div class="dropdown-menu" id="add-source-dropdown">
+              <button class="dropdown-item" data-source-type="camera"><i data-lucide="video"></i> Cámara Web</button>
+              <button class="dropdown-item" data-source-type="screen"><i data-lucide="monitor"></i> Captura de Pantalla</button>
+              <button class="dropdown-item" data-source-type="image"><i data-lucide="image"></i> Imagen</button>
+              <button class="dropdown-item" data-source-type="text"><i data-lucide="type"></i> Texto</button>
+              <button class="dropdown-item" data-source-type="color"><i data-lucide="palette"></i> Color Sólido / Degradado</button>
+              <button class="dropdown-item" data-source-type="web"><i data-lucide="globe"></i> Navegador Web (Overlay)</button>
+              <button class="dropdown-item" data-source-type="video"><i data-lucide="play"></i> Video Local</button>
+            </div>
+          </div>
+          <div class="panel-content scrollable">
+            <ul class="item-list" id="sources-list">
+              <!-- Rendered Dynamically -->
+            </ul>
+          </div>
+          
+          <!-- Source Properties Form (Dynamic) -->
+          <div class="source-properties" id="source-properties-panel">
+            <div class="properties-header">
+              <span>Propiedades de Fuente</span>
+              <button class="btn-icon" id="btn-close-properties"><i data-lucide="x"></i></button>
+            </div>
+            <div class="properties-content" id="properties-form-container">
+              <!-- Dynamic Form fields based on source type -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Center Panel: Canvas Screen (Preview & Program) -->
+      <section class="panel canvas-panel">
+        <div class="canvas-workspace-wrapper" id="canvas-wrapper">
+          <!-- Standard Mode Layout -->
+          <div class="canvas-container single-layout" id="single-canvas-container">
+            <div class="canvas-title">PROGRAMA (VIVO)</div>
+            <div class="canvas-viewport">
+              <canvas id="live-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Studio Mode Layout (Hidden by default) -->
+          <div class="canvas-container studio-layout hidden" id="studio-canvas-container">
+            <div class="studio-viewport-container">
+              <div class="viewport-box">
+                <div class="canvas-title preview-title">VISTA PREVIA (EDITANDO)</div>
+                <div class="canvas-viewport">
+                  <canvas id="preview-canvas"></canvas>
+                </div>
+              </div>
+              
+              <div class="studio-transition-controls">
+                <button class="btn btn-primary" id="btn-studio-transition">
+                  <i data-lucide="arrow-right-left"></i> TRANSICIÓN
+                </button>
+                <div class="transition-settings">
+                  <label for="select-transition-type">Efecto</label>
+                  <select id="select-transition-type">
+                    <option value="cut">Corte</option>
+                    <option value="fade" selected>Desvanecimiento</option>
+                  </select>
+                  <label for="input-transition-duration">Duración</label>
+                  <input type="number" id="input-transition-duration" value="300" min="50" max="2000" step="50">
+                  <span class="unit">ms</span>
+                </div>
+              </div>
+              
+              <div class="viewport-box">
+                <div class="canvas-title program-title">PROGRAMA (VIVO)</div>
+                <div class="canvas-viewport">
+                  <!-- Linked to live-canvas -->
+                  <canvas id="program-canvas-link"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Mixer & Chat -->
+      <section class="panel side-panel right-panel">
+        <!-- Audio Mixer Panel -->
+        <div class="panel-section mixer-section">
+          <div class="panel-header">
+            <h3><i data-lucide="sliders"></i> MEZCLADOR DE AUDIO</h3>
+            <button class="btn-icon" id="btn-add-audio-channel" title="Añadir Canal de Audio"><i data-lucide="plus"></i></button>
+          </div>
+          <div class="panel-content audio-mixer scrollable">
+            <!-- Desktop Audio Stream -->
+            <div class="mixer-channel" id="channel-desktop">
+              <div class="channel-info">
+                <span class="channel-name">Desktop Audio</span>
+                <span class="channel-db font-mono" id="db-desktop">-inf dB</span>
+              </div>
+              <div class="channel-fader-container">
+                <button class="btn-icon btn-mute" id="mute-desktop" title="Silenciar"><i data-lucide="volume-2"></i></button>
+                <input type="range" class="channel-slider" id="fader-desktop" min="0" max="1.5" step="0.01" value="1.0">
+                <button class="btn-icon btn-settings-audio" data-channel-id="desktop" title="Propiedades y Filtros"><i data-lucide="settings"></i></button>
+              </div>
+              <div class="channel-meter">
+                <canvas class="vu-meter" id="meter-desktop"></canvas>
+              </div>
+            </div>
+
+            <!-- Mic/Aux Audio Stream -->
+            <div class="mixer-channel" id="channel-mic">
+              <div class="channel-info">
+                <span class="channel-name">Mic/Aux</span>
+                <span class="channel-db font-mono" id="db-mic">-inf dB</span>
+              </div>
+              <div class="channel-fader-container">
+                <button class="btn-icon btn-mute" id="mute-mic" title="Silenciar"><i data-lucide="mic"></i></button>
+                <input type="range" class="channel-slider" id="fader-mic" min="0" max="1.5" step="0.01" value="1.0">
+                <button class="btn-icon btn-settings-audio" data-channel-id="mic" title="Propiedades y Filtros"><i data-lucide="settings"></i></button>
+              </div>
+              <div class="channel-meter">
+                <canvas class="vu-meter" id="meter-mic"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Simulator Panel -->
+        <div class="panel-section chat-section">
+          <div class="panel-header">
+            <h3><i data-lucide="message-square"></i> CHATS INTEGRADOS</h3>
+            <div class="chat-filters">
+              <button class="chat-filter-btn active" data-filter="all">TODOS</button>
+              <button class="chat-filter-btn" data-filter="twitch">TWITCH</button>
+              <button class="chat-filter-btn" data-filter="youtube">YT</button>
+              <button class="chat-filter-btn" data-filter="kick">KICK</button>
+            </div>
+          </div>
+          <div class="panel-content chat-display scrollable" id="chat-messages-container">
+            <!-- Simulated messages will load here -->
+          </div>
+          <div class="chat-control-area">
+            <div class="chat-sim-toggle">
+              <label class="toggle-switch">
+                <input type="checkbox" id="chk-simulate-chat" checked>
+                <span class="toggle-slider"></span>
+              </label>
+              <span>Simular Actividad</span>
+              <button class="btn btn-sm btn-outline" id="btn-trigger-alert" title="Disparar Alerta Simulada">
+                <i data-lucide="gift"></i> Alerta
+              </button>
+            </div>
+            <div class="chat-input-row">
+              <input type="text" id="chat-input-msg" placeholder="Enviar mensaje de prueba...">
+              <select id="chat-platform-select">
+                <option value="twitch">Twitch</option>
+                <option value="youtube">YouTube</option>
+                <option value="kick">Kick</option>
+              </select>
+              <button class="btn-icon" id="chat-send-btn"><i data-lucide="send"></i></button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Action Dock -->
+    <footer class="bottom-dock">
+      <div class="dock-left-actions">
+        <button class="btn btn-danger" id="btn-toggle-stream">
+          <i data-lucide="play"></i> Iniciar Transmisión
+        </button>
+        <button class="btn btn-outline" id="btn-toggle-record">
+          <i data-lucide="video"></i> Iniciar Grabación
+        </button>
+      </div>
+
+      <div class="dock-center-info" id="recording-indicator">
+        <span class="rec-dot hidden" id="rec-dot"></span>
+        <span class="rec-text hidden" id="rec-text">GRABANDO</span>
+      </div>
+
+      <div class="dock-right-actions">
+        <button class="btn btn-secondary" id="btn-toggle-studio">
+          <i data-lucide="layout"></i> Modo Estudio
+        </button>
+        <button class="btn btn-secondary" id="btn-open-edit-stream">
+          <i data-lucide="edit-3"></i> Editar Info
+        </button>
+        <button class="btn btn-secondary" id="btn-open-settings">
+          <i data-lucide="settings"></i> Configuración
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Settings Modal (Advanced config) -->
+  <div class="modal-overlay hidden" id="settings-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2><i data-lucide="settings"></i> Panel de Configuración Avanzada</h2>
+        <button class="btn-icon" id="btn-close-settings-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <aside class="modal-sidebar" style="display: flex; flex-direction: column;">
+          <button class="tab-btn active" data-target="tab-stream"><i data-lucide="globe"></i> Emisión</button>
+          <button class="tab-btn" data-target="tab-output"><i data-lucide="log-out"></i> Salida</button>
+          <button class="tab-btn" data-target="tab-audio"><i data-lucide="volume-2"></i> Audio</button>
+          <button class="tab-btn" data-target="tab-video"><i data-lucide="video"></i> Video</button>
+          <button class="tab-btn" data-target="tab-hotkeys"><i data-lucide="keyboard"></i> Atajos</button>
+          <button class="tab-btn" data-target="tab-advanced"><i data-lucide="sliders"></i> Avanzado</button>
+          <button class="btn btn-primary btn-sm" id="btn-run-wizard" style="margin-top: auto; display: flex; align-items: center; gap: 6px; justify-content: center; width: calc(100% - 16px); margin-left: 8px; margin-bottom: 8px;">
+            <i data-lucide="sparkles"></i> Asistente Auto
+          </button>
+        </aside>
+        
+        <main class="modal-content scrollable">
+          <!-- Stream Settings Tab -->
+          <div class="tab-content" id="tab-stream">
+            <h3>Configuración de Emisión</h3>
+            
+            <!-- Twitch Section -->
+            <div class="settings-group card-platform twitch-theme">
+              <div class="platform-card-header">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="opt-twitch-enable" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+                <h4><i data-lucide="twitch"></i> Twitch</h4>
+              </div>
+              <div class="form-row">
+                <label for="input-twitch-server">Servidor (Ingest)</label>
+                <input type="text" id="input-twitch-server" placeholder="rtmp://live.twitch.tv/app/" value="rtmp://live.twitch.tv/app/">
+              </div>
+              <div class="form-row">
+                <label for="input-twitch-key">Clave de Transmisión (Stream Key)</label>
+                <div class="password-input">
+                  <input type="password" id="input-twitch-key" placeholder="live_xxxxxxxxx">
+                  <button class="btn-toggle-password" type="button"><i data-lucide="eye-off"></i></button>
+                </div>
+              </div>
+              <div class="form-row">
+                <label for="input-twitch-channel">Nombre de Canal (Usuario)</label>
+                <input type="text" id="input-twitch-channel" placeholder="Ej: jugecraf">
+              </div>
+              <div class="form-row">
+                <label for="input-twitch-oauth">Token de Acceso (OAuth Token)</label>
+                <div class="password-input">
+                  <input type="password" id="input-twitch-oauth" placeholder="oauth:xxxxxxxxxxxxxxxxxxxxxx">
+                  <button class="btn-toggle-password" type="button"><i data-lucide="eye-off"></i></button>
+                </div>
+                <div style="font-size: 10px; margin-top: 4px; color: var(--text-muted);">
+                  Obtén tu token en <a href="https://twitchtokengenerator.com/" target="_blank" style="color: var(--twitch-color);">twitchtokengenerator.com</a> (selecciona los permisos de <strong>Chat Read/Write</strong> y <strong>channel:manage:broadcast</strong>) para poder usar el chat y editar tu directo desde aquí.
+                </div>
+              </div>
+            </div>
+
+            <!-- YouTube Section -->
+            <div class="settings-group card-platform youtube-theme">
+              <div class="platform-card-header">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="opt-youtube-enable">
+                  <span class="toggle-slider"></span>
+                </label>
+                <h4><i data-lucide="youtube"></i> YouTube Live</h4>
+              </div>
+              <div class="form-row">
+                <label for="input-youtube-server">Servidor (RTMP)</label>
+                <input type="text" id="input-youtube-server" placeholder="rtmp://a.rtmp.youtube.com/live2" value="rtmp://a.rtmp.youtube.com/live2">
+              </div>
+              <div class="form-row">
+                <label for="input-youtube-key">Clave de Transmisión (Stream Key)</label>
+                <div class="password-input">
+                  <input type="password" id="input-youtube-key" placeholder="xxxx-xxxx-xxxx-xxxx">
+                  <button class="btn-toggle-password" type="button"><i data-lucide="eye-off"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kick Section -->
+            <div class="settings-group card-platform kick-theme">
+              <div class="platform-card-header">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="opt-kick-enable">
+                  <span class="toggle-slider"></span>
+                </label>
+                <h4><i data-lucide="shield-alert"></i> Kick Streaming</h4>
+              </div>
+              <div class="form-row">
+                <label for="input-kick-server">Servidor (Ingest)</label>
+                <input type="text" id="input-kick-server" placeholder="rtmp://live.kick.com/app/" value="rtmp://live.kick.com/app/">
+              </div>
+              <div class="form-row">
+                <label for="input-kick-key">Clave de Transmisión (Stream Key)</label>
+                <div class="password-input">
+                  <input type="password" id="input-kick-key" placeholder="sk_xxxxxxxxx">
+                  <button class="btn-toggle-password" type="button"><i data-lucide="eye-off"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Output Settings Tab -->
+          <div class="tab-content hidden" id="tab-output">
+            <h3>Configuración de Salida</h3>
+            
+            <div class="settings-group">
+              <h4>Streaming (Emisión)</h4>
+              <div class="form-row">
+                <label for="opt-video-encoder">Codificador de Video</label>
+                <select id="opt-video-encoder">
+                  <option value="libx264" selected>Software (x264)</option>
+                  <option value="h264_nvenc">Hardware NVIDIA (NVENC H.264)</option>
+                  <option value="h264_amf">Hardware AMD (AMF H.264)</option>
+                </select>
+              </div>
+              
+              <div class="form-row">
+                <label for="input-video-bitrate">Tasa de Bits de Video (Bitrate)</label>
+                <div class="number-unit">
+                  <input type="number" id="input-video-bitrate" value="4500" min="1000" max="12000" step="500">
+                  <span class="unit">Kbps</span>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="opt-encoder-preset">Preset del Codificador</label>
+                <select id="opt-encoder-preset">
+                  <option value="ultrafast">Ultrafast</option>
+                  <option value="superfast">Superfast</option>
+                  <option value="veryfast" selected>Veryfast</option>
+                  <option value="faster">Faster</option>
+                  <option value="fast">Fast</option>
+                  <option value="medium">Medium (Recomendado)</option>
+                  <option value="slow">Slow</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label for="opt-audio-bitrate">Tasa de Bits de Audio</label>
+                <select id="opt-audio-bitrate">
+                  <option value="96">96 Kbps</option>
+                  <option value="128" selected>128 Kbps</option>
+                  <option value="160">160 Kbps</option>
+                  <option value="192">192 Kbps</option>
+                  <option value="320">320 Kbps</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label for="input-keyframe-interval">Intervalo de Keyframes (GOP)</label>
+                <div class="number-unit">
+                  <input type="number" id="input-keyframe-interval" value="2" min="1" max="10">
+                  <span class="unit">segundos</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h4>Grabación Local</h4>
+              <div class="form-row">
+                <label for="input-record-dir">Ruta de Grabación</label>
+                <div class="input-action-row">
+                  <input type="text" id="input-record-dir" readonly placeholder="Predeterminada del sistema">
+                  <button class="btn btn-secondary btn-sm" id="btn-select-record-dir">Buscar...</button>
+                </div>
+              </div>
+              <div class="form-row">
+                <label for="opt-record-format">Formato de Grabación</label>
+                <select id="opt-record-format">
+                  <option value="mp4" selected>MP4 (.mp4)</option>
+                  <option value="webm">WebM (.webm)</option>
+                  <option value="mkv">Matroska (.mkv)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Audio Settings Tab -->
+          <div class="tab-content hidden" id="tab-audio">
+            <h3>Configuración de Audio</h3>
+            
+            <div class="settings-group">
+              <h4>Audio Global</h4>
+              <div class="form-row">
+                <label for="opt-audio-samplerate">Frecuencia de Muestreo</label>
+                <select id="opt-audio-samplerate">
+                  <option value="44100">44.1 kHz</option>
+                  <option value="48000" selected>48 kHz</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label for="opt-audio-channels">Canales</label>
+                <select id="opt-audio-channels">
+                  <option value="stereo" selected>Stereo</option>
+                  <option value="mono">Mono</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h4>Dispositivos de Audio</h4>
+              <div class="form-row">
+                <label for="opt-device-mic">Micrófono / Dispositivo Auxiliar</label>
+                <select id="opt-device-mic">
+                  <option value="default">Predeterminado del Sistema</option>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video Settings Tab -->
+          <div class="tab-content hidden" id="tab-video">
+            <h3>Configuración de Video</h3>
+            
+            <div class="settings-group">
+              <div class="form-row">
+                <label for="opt-resolution-base">Resolución de Lienzo (Base)</label>
+                <select id="opt-resolution-base">
+                  <option value="1920x1080" selected>1920x1080 (16:9)</option>
+                  <option value="1280x720">1280x720 (16:9)</option>
+                  <option value="854x480">854x480 (16:9)</option>
+                </select>
+              </div>
+              
+              <div class="form-row">
+                <label for="opt-resolution-output">Resolución de Salida (Escalada)</label>
+                <select id="opt-resolution-output">
+                  <option value="1920x1080" selected>1920x1080 (1080p)</option>
+                  <option value="1280x720">1280x720 (720p)</option>
+                  <option value="854x480">854x480 (480p)</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label for="opt-video-fps">FPS (Fotogramas por Segundo)</label>
+                <select id="opt-video-fps">
+                  <option value="60" selected>60</option>
+                  <option value="30">30</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hotkeys Settings Tab -->
+          <div class="tab-content hidden" id="tab-hotkeys">
+            <h3>Atajos de Teclado (Hotkeys)</h3>
+            <p class="description-text">Asigna combinaciones de teclas para disparar acciones rápidas.</p>
+            
+            <div class="settings-group">
+              <div class="form-row">
+                <label>Iniciar Transmisión</label>
+                <input type="text" class="hotkey-input" id="hk-start-stream" readonly placeholder="Presiona una tecla...">
+              </div>
+              <div class="form-row">
+                <label>Detener Transmisión</label>
+                <input type="text" class="hotkey-input" id="hk-stop-stream" readonly placeholder="Presiona una tecla...">
+              </div>
+              <div class="form-row">
+                <label>Cambiar a Escena 1</label>
+                <input type="text" class="hotkey-input" id="hk-scene-1" readonly placeholder="Presiona una tecla...">
+              </div>
+              <div class="form-row">
+                <label>Cambiar a Escena 2</label>
+                <input type="text" class="hotkey-input" id="hk-scene-2" readonly placeholder="Presiona una tecla...">
+              </div>
+              <div class="form-row">
+                <label>Activar/Silenciar Micrófono</label>
+                <input type="text" class="hotkey-input" id="hk-mute-mic" readonly placeholder="Presiona una tecla...">
+              </div>
+            </div>
+          </div>
+
+          <!-- Advanced Settings Tab -->
+          <div class="tab-content hidden" id="tab-advanced">
+            <h3>Configuración Avanzada</h3>
+            
+            <div class="settings-group">
+              <h4>General</h4>
+              <div class="form-row">
+                <label for="opt-proc-priority">Prioridad de Proceso</label>
+                <select id="opt-proc-priority">
+                  <option value="high">Alta</option>
+                  <option value="above_normal">Por encima de lo normal</option>
+                  <option value="normal" selected>Normal</option>
+                  <option value="idle">Baja</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h4>Video de FFmpeg</h4>
+              <div class="form-row">
+                <label for="opt-color-space">Espacio de Color</label>
+                <select id="opt-color-space">
+                  <option value="bt709" selected>Rec. 709</option>
+                  <option value="srgb">sRGB</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-cancel-settings">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-settings">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reusable Prompt Modal -->
+  <div class="modal-overlay hidden" id="prompt-modal">
+    <div class="modal-container" style="width: 420px; height: auto; min-height: 180px; align-self: center;">
+      <div class="modal-header">
+        <h2 id="prompt-title">Ingresar Datos</h2>
+        <button class="btn-icon" id="btn-close-prompt-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body" style="grid-template-columns: 1fr; padding: 16px; display: block; overflow: visible;">
+        <div class="form-row" style="grid-template-columns: 1fr; gap: 8px;">
+          <label id="prompt-label" for="prompt-input" style="margin-bottom: 6px; display: block;"></label>
+          <input type="text" id="prompt-input" style="width: 100%;">
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 48px; padding: 0 16px; gap: 8px;">
+        <button class="btn btn-secondary btn-sm" id="btn-cancel-prompt">Cancelar</button>
+        <button class="btn btn-primary btn-sm" id="btn-submit-prompt">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen/Window Selector Modal -->
+  <div class="modal-overlay hidden" id="screen-picker-modal">
+    <div class="modal-container" style="width: 640px; height: 480px; align-self: center;">
+      <div class="modal-header">
+        <h2><i data-lucide="monitor"></i> Selecciona Pantalla o Ventana</h2>
+        <button class="btn-icon" id="btn-close-screen-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body scrollable" style="grid-template-columns: 1fr; padding: 16px; display: block;">
+        <div class="screen-sources-grid" id="screen-sources-grid">
+          <!-- Populated dynamically with thumbnails -->
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 52px; padding: 0 16px;">
+        <button class="btn btn-secondary btn-sm" id="btn-cancel-screen">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Device Selector Modal -->
+  <div class="modal-overlay hidden" id="audio-picker-modal">
+    <div class="modal-container" style="width: 440px; height: auto; min-height: 200px; align-self: center;">
+      <div class="modal-header">
+        <h2><i data-lucide="volume-2"></i> Añadir Canal de Audio</h2>
+        <button class="btn-icon" id="btn-close-audio-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body" style="grid-template-columns: 1fr; padding: 16px; display: block; overflow: visible;">
+        <div class="form-row" style="grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px;">
+          <label for="select-new-audio-device">Selecciona Dispositivo de Entrada (Mic/Cable):</label>
+          <select id="select-new-audio-device" style="width: 100%;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div class="form-row" style="grid-template-columns: 1fr; gap: 8px;">
+          <label for="input-new-audio-name">Nombre del Canal (Ej: Juego, Discord, Mic2):</label>
+          <input type="text" id="input-new-audio-name" placeholder="Ej: Juego / Música / Discord">
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 52px; padding: 0 16px; gap: 8px;">
+        <button class="btn btn-secondary btn-sm" id="btn-cancel-audio">Cancelar</button>
+        <button class="btn btn-primary btn-sm" id="btn-submit-audio">Añadir Canal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Stream Info Modal -->
+  <div class="modal-overlay hidden" id="edit-stream-modal">
+    <div class="modal-container" style="width: 460px; height: auto; min-height: 250px; align-self: center; background: #13131a; border: 1px solid #2a2a35;">
+      <div class="modal-header" style="border-bottom: 1px solid #1e1e27;">
+        <h2 style="display: flex; align-items: center; gap: 8px;"><i data-lucide="edit-3" style="color: #a855f7;"></i> Editar Info del Stream</h2>
+        <button class="btn-icon" id="btn-close-edit-stream-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body" style="grid-template-columns: 1fr; padding: 16px; display: block; overflow: visible;">
+        <div class="form-row" style="grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px;">
+          <label for="input-stream-title">Título del Directo:</label>
+          <input type="text" id="input-stream-title" placeholder="Ej: ¡Jugando Minecraft con seguidores!">
+        </div>
+        <div class="form-row" style="grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px;">
+          <label for="input-stream-game">Categoría / Juego:</label>
+          <input type="text" id="input-stream-game" placeholder="Ej: Minecraft / Just Chatting">
+        </div>
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 16px;">
+          * Nota: Para actualizar la información, asegúrate de configurar tu <strong>Nombre de Canal</strong> y <strong>OAuth Token</strong> en el menú de Configuración → Emisión.
+        </p>
+      </div>
+      <div class="modal-footer" style="height: 52px; padding: 0 16px; gap: 8px; border-top: 1px solid #1e1e27;">
+        <button class="btn btn-secondary btn-sm" id="btn-cancel-edit-stream">Cancelar</button>
+        <button class="btn btn-primary btn-sm" id="btn-submit-edit-stream">Actualizar en Twitch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Source Addition Popovers/Modals can be added here -->
+
+  <!-- Auto-Configuration Wizard Modal -->
+  <div class="modal-overlay hidden" id="wizard-modal" style="z-index: 9999;">
+    <div class="modal-container" style="width: 550px; height: auto; min-height: 380px; align-self: center; background: #13131a; border: 1px solid #2a2a35;">
+      <div class="modal-header" style="border-bottom: 1px solid #1e1e27;">
+        <h2 style="display: flex; align-items: center; gap: 8px;"><i data-lucide="sparkles" style="color: #a855f7;"></i> Asistente de Configuración</h2>
+        <button class="btn-icon" id="btn-close-wizard"><i data-lucide="x"></i></button>
+      </div>
+      
+      <!-- Step 1: Goal -->
+      <div class="wizard-step" id="wizard-step-1">
+        <div class="modal-body" style="padding: 24px; color: #d1d5db; display: block; overflow: visible; grid-template-columns: 1fr;">
+          <p style="margin-bottom: 16px; font-size: 14px; line-height: 1.5;">Este asistente analizará el hardware de tu sistema y determinará la configuración más optimizada (codificador, bitrate, resolución y FPS) para que tu transmisión sea fluida y sin cortes.</p>
+          <div class="form-group" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+            <label style="font-weight: 600; color: #a855f7; margin-bottom: 4px;">¿Para qué deseas usar el programa principalmente?</label>
+            <label class="wizard-radio-card" style="display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 1px solid #2a2a35; border-radius: 8px; background: #1a1a24; cursor: pointer;">
+              <input type="radio" name="wizard-goal" value="stream" checked style="margin-top: 3px;">
+              <div>
+                <strong style="display: block; color: #fff;">Optimizar para Transmisión (Streaming)</strong>
+                <span style="font-size: 12px; color: #9ca3af;">La transmisión en vivo será fluida. La grabación local será secundaria.</span>
+              </div>
+            </label>
+            <label class="wizard-radio-card" style="display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 1px solid #2a2a35; border-radius: 8px; background: #1a1a24; cursor: pointer;">
+              <input type="radio" name="wizard-goal" value="record" style="margin-top: 3px;">
+              <div>
+                <strong style="display: block; color: #fff;">Optimizar para Grabación Local</strong>
+                <span style="font-size: 12px; color: #9ca3af;">Se priorizará la máxima calidad visual en grabaciones locales en tu disco.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 16px; border-top: 1px solid #1e1e27; display: flex; justify-content: flex-end; height: 52px;">
+          <button class="btn btn-primary" id="btn-wizard-next-1">Siguiente <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 2: Settings Target -->
+      <div class="wizard-step hidden" id="wizard-step-2">
+        <div class="modal-body" style="padding: 24px; color: #d1d5db; display: block; overflow: visible; grid-template-columns: 1fr;">
+          <div class="form-row" style="grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px;">
+            <label style="font-weight: 600; color: #a855f7;">Resolución de Lienzo Objetivo:</label>
+            <select id="wizard-resolution" style="width: 100%; background: #1a1a24; border: 1px solid #2a2a35; color: #fff; padding: 8px; border-radius: 6px;">
+              <option value="1280x720" selected>1280x720 (HD - Recomendado para la mayoría)</option>
+              <option value="1920x1080">1920x1080 (Full HD - Requiere mejor conexión/gráfica)</option>
+            </select>
+          </div>
+          <div class="form-row" style="grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px;">
+            <label style="font-weight: 600; color: #a855f7;">Tasa de Fotogramas (FPS):</label>
+            <select id="wizard-fps" style="width: 100%; background: #1a1a24; border: 1px solid #2a2a35; color: #fff; padding: 8px; border-radius: 6px;">
+              <option value="60-30" selected>60 o 30 FPS, pero preferir 60 si el hardware lo permite</option>
+              <option value="30">30 FPS constantes (Ideal para procesadores modestos)</option>
+            </select>
+          </div>
+          <div class="form-row" style="grid-template-columns: 1fr; gap: 8px;">
+            <label style="font-weight: 600; color: #a855f7;">Velocidad de Internet de Subida (Upload):</label>
+            <select id="wizard-upload" style="width: 100%; background: #1a1a24; border: 1px solid #2a2a35; color: #fff; padding: 8px; border-radius: 6px;">
+              <option value="high" selected>Fibra Óptica / Conexión Rápida (10+ Mbps de subida)</option>
+              <option value="medium">Conexión Media (5 a 10 Mbps de subida)</option>
+              <option value="low">Conexión Modesta (Menos de 5 Mbps de subida)</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 16px; border-top: 1px solid #1e1e27; display: flex; justify-content: space-between; height: 52px;">
+          <button class="btn btn-secondary" id="btn-wizard-back-2"><i data-lucide="arrow-left"></i> Atrás</button>
+          <button class="btn btn-primary" id="btn-wizard-next-2">Iniciar Análisis <i data-lucide="activity"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 3: Analysis & Benchmarking -->
+      <div class="wizard-step hidden" id="wizard-step-3">
+        <div class="modal-body" style="padding: 24px; color: #d1d5db; text-align: center; display: block; overflow: visible; grid-template-columns: 1fr;">
+          <h3 style="color: #fff; margin-bottom: 12px;">Analizando tu Sistema...</h3>
+          <div class="progress-bar-container" style="width: 100%; height: 10px; background: #1e1e27; border-radius: 5px; overflow: hidden; margin: 20px 0;">
+            <div id="wizard-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #a855f7, #ec4899); transition: width 0.3s;"></div>
+          </div>
+          <p id="wizard-status-text" style="font-size: 13px; color: #9ca3af; margin-bottom: 24px;">Iniciando pruebas diagnósticas...</p>
+          <div style="background: #101015; border: 1px solid #1e1e27; border-radius: 6px; padding: 12px; text-align: left; font-family: monospace; font-size: 12px; color: #34d399; max-height: 120px; overflow-y: auto;" id="wizard-log-terminal">
+            <!-- Terminal logs -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Results & Apply -->
+      <div class="wizard-step hidden" id="wizard-step-4">
+        <div class="modal-body" style="padding: 24px; color: #d1d5db; display: block; overflow: visible; grid-template-columns: 1fr;">
+          <h3 style="color: #fff; margin-bottom: 16px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;"><i data-lucide="check-circle" style="color: #10b981;"></i> ¡Análisis Completado!</h3>
+          <p style="font-size: 13px; text-align: center; margin-bottom: 20px; color: #9ca3af;">El asistente ha calculado la configuración ideal basada en tus especificaciones.</p>
+          
+          <div style="background: #1a1a24; border: 1px solid #2a2a35; border-radius: 8px; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+            <div><strong style="color: #9ca3af; font-size: 12px;">Codificador de Video:</strong> <span id="res-encoder" style="display:block; color: #fff; font-size: 14px; font-weight: 600;">Detectando...</span></div>
+            <div><strong style="color: #9ca3af; font-size: 12px;">Bitrate Recomendado:</strong> <span id="res-bitrate" style="display:block; color: #fff; font-size: 14px; font-weight: 600;">Calculando...</span></div>
+            <div><strong style="color: #9ca3af; font-size: 12px;">Resolución Base:</strong> <span id="res-resolution" style="display:block; color: #fff; font-size: 14px; font-weight: 600;">HD</span></div>
+            <div><strong style="color: #9ca3af; font-size: 12px;">FPS del Stream:</strong> <span id="res-fps" style="display:block; color: #fff; font-size: 14px; font-weight: 600;">30 FPS</span></div>
+          </div>
+          
+          <div style="background: #101015; border-left: 3px solid #a855f7; padding: 10px; font-size: 12px; color: #9ca3af; line-height: 1.4;">
+            <strong>Hardware Detectado:</strong>
+            <div id="wizard-detected-hw" style="margin-top: 4px; font-family: monospace;">-</div>
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 16px; border-top: 1px solid #1e1e27; display: flex; justify-content: flex-end; height: 52px;">
+          <button class="btn btn-primary" id="btn-wizard-apply">Aplicar Configuración</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Audio Properties & Filters Modal -->
+  <div class="modal-overlay hidden" id="audio-properties-modal" style="z-index: 10090;">
+    <div class="modal-container" style="width: 580px; height: auto; max-height: 85vh; align-self: center; background: #13131a; border: 1px solid #2a2a35; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden;">
+      <div class="modal-header" style="border-bottom: 1px solid #1e1e27; padding: 12px 16px;">
+        <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; margin: 0;" id="audio-props-title"><i data-lucide="sliders" style="color: #a855f7;"></i> Propiedades y Filtros de Audio</h2>
+        <button class="btn-icon" id="btn-close-audio-props"><i data-lucide="x"></i></button>
+      </div>
+      
+      <div class="modal-body scrollable" style="padding: 20px; color: #d1d5db; overflow-y: auto; flex: 1; display: block;">
+        <!-- Device Selection (if applicable) -->
+        <div class="settings-group" id="audio-device-group" style="margin-bottom: 20px;">
+          <h4 style="margin: 0 0 10px 0; color: #fff; font-size: 13px;">Dispositivo de Entrada</h4>
+          <div class="form-row" style="grid-template-columns: 1fr; gap: 8px;">
+            <select id="audio-props-device-select" style="width: 100%; padding: 8px; background: #1e1e27; border: 1px solid #2a2a35; color: #fff; border-radius: 4px;">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+        
+        <!-- Filters list -->
+        <div class="settings-group">
+          <h4 style="margin: 0 0 15px 0; color: #fff; font-size: 13px; border-bottom: 1px solid #2a2a35; padding-bottom: 6px;">Filtros de Audio Activos</h4>
+          
+          <!-- 1. Noise Gate (Puerta de Ruido) -->
+          <div style="background: #181822; border: 1px solid #22222f; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <label style="font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px;">
+                <input type="checkbox" id="filter-gate-enable"> Puerta de Ruido (Noise Gate)
+              </label>
+              <span style="font-size: 10px; color: var(--text-muted);">Elimina siseo y ruido ambiente</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 11px;">
+              <div style="display: flex; justify-content: space-between;">
+                <span>Umbral de Clausura (Threshold):</span>
+                <span id="filter-gate-val">-40 dB</span>
+              </div>
+              <input type="range" id="filter-gate-threshold" min="-60" max="-10" step="1" value="-40" style="width:100%;">
+            </div>
+          </div>
+          
+          <!-- 2. Compressor -->
+          <div style="background: #181822; border: 1px solid #22222f; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <label style="font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px;">
+                <input type="checkbox" id="filter-comp-enable"> Compresor de Audio
+              </label>
+              <span style="font-size: 10px; color: var(--text-muted);">Nivela picos altos y bajos</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 11px;">
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                  <span>Umbral (Threshold):</span>
+                  <span id="filter-comp-thresh-val">-24 dB</span>
+                </div>
+                <input type="range" id="filter-comp-threshold" min="-50" max="0" step="1" value="-24" style="width:100%;">
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                  <span>Relación (Ratio):</span>
+                  <span id="filter-comp-ratio-val">4:1</span>
+                </div>
+                <input type="range" id="filter-comp-ratio" min="1" max="20" step="0.5" value="4" style="width:100%;">
+              </div>
+            </div>
+          </div>
+          
+          <!-- 3. Equalizer (3-Band EQ) -->
+          <div style="background: #181822; border: 1px solid #22222f; border-radius: 6px; padding: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <label style="font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px;">
+                <input type="checkbox" id="filter-eq-enable"> Ecualizador de 3 Bandas
+              </label>
+              <span style="font-size: 10px; color: var(--text-muted);">Ajusta Graves, Medios y Agudos</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; font-size: 11px;">
+              <div style="text-align: center;">
+                <div style="margin-bottom: 4px;">Graves (Bass)</div>
+                <input type="range" id="filter-eq-low" min="-12" max="12" step="1" value="0" style="writing-mode: vertical-lr; direction: rtl; height: 70px; width: 100%; margin: 8px 0;">
+                <div id="filter-eq-low-val">0 dB</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="margin-bottom: 4px;">Medios (Mids)</div>
+                <input type="range" id="filter-eq-mid" min="-12" max="12" step="1" value="0" style="writing-mode: vertical-lr; direction: rtl; height: 70px; width: 100%; margin: 8px 0;">
+                <div id="filter-eq-mid-val">0 dB</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="margin-bottom: 4px;">Agudos (Treble)</div>
+                <input type="range" id="filter-eq-high" min="-12" max="12" step="1" value="0" style="writing-mode: vertical-lr; direction: rtl; height: 70px; width: 100%; margin: 8px 0;">
+                <div id="filter-eq-high-val">0 dB</div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      <div class="modal-footer" style="padding: 12px 16px; border-top: 1px solid #1e1e27; display: flex; justify-content: flex-end; height: auto;">
+        <button class="btn btn-primary btn-sm" id="btn-audio-props-save">Guardar Filtros</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal (Acerca de) -->
+  <div class="modal-overlay hidden" id="about-modal" style="z-index: 10100;">
+    <div class="modal-container" style="width: 480px; height: auto; align-self: center; background: #13131a; border: 1px solid #2a2a35; border-radius: 8px;">
+      <div class="modal-header" style="border-bottom: 1px solid #1e1e27; padding: 12px 16px;">
+        <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; margin: 0;"><i data-lucide="info" style="color: #9146ff;"></i> Acerca de StreamStudio</h2>
+        <button class="btn-icon" id="btn-close-about-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body" style="padding: 24px; text-align: center; color: #d1d5db; display: block;">
+        <i data-lucide="radio" class="logo-icon pulse" style="width: 48px; height: 48px; color: #9146ff; margin-bottom: 16px; display: inline-block;"></i>
+        <h3 style="font-size: 20px; font-weight: 700; margin: 0 0 4px 0; color: #fff;">StreamStudio Professional</h3>
+        <span style="font-size: 11px; background: #221f30; color: #a855f7; border: 1px solid #3c2a5e; padding: 2px 8px; border-radius: 20px; font-weight: 600;">VERSIÓN 1.0.0 (RELEASE OFICIAL)</span>
+        
+        <p style="font-size: 13px; line-height: 1.5; margin: 16px 0 24px 0; color: #9ca3af; text-align: justify;">
+          StreamStudio es una plataforma integrada de nivel profesional diseñada para la transmisión simultánea a múltiples plataformas (Twitch, YouTube, Kick) con latencia ultra baja, un mezclador de audio digital integrado con filtros DSP de supresión de eco y ruido, y overlays interactivos como lector de voz (TTS).
+        </p>
+        
+        <div style="background: #101015; border: 1px solid #1e1e27; border-radius: 6px; padding: 12px; margin-bottom: 16px; text-align: left;">
+          <h4 style="font-size: 12px; margin: 0 0 8px 0; color: #fff; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Información de Contacto y Soporte</h4>
+          <div style="font-size: 12px; display: flex; flex-direction: column; gap: 6px; color: #9ca3af;">
+            <div><strong style="color: #d1d5db;">Sitio Web Oficial:</strong> <a href="https://streamstudio.live" style="color: #a855f7; text-decoration: none;" target="_blank">www.streamstudio.live</a></div>
+            <div><strong style="color: #d1d5db;">Correo de Soporte:</strong> <a href="mailto:soporte@streamstudio.live" style="color: #a855f7; text-decoration: none;">soporte@streamstudio.live</a></div>
+            <div><strong style="color: #d1d5db;">Servidor de Discord:</strong> <a href="https://discord.gg/streamstudio" style="color: #a855f7; text-decoration: none;" target="_blank">discord.gg/streamstudio</a></div>
+          </div>
+        </div>
+        
+        <div style="font-size: 10px; color: #6b7280; margin-top: 16px;">
+          © 2026 StreamStudio Inc. Todos los derechos reservados.
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 12px 16px; border-top: 1px solid #1e1e27; display: flex; justify-content: flex-end; height: auto;">
+        <button class="btn btn-primary btn-sm" id="btn-about-accept">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Terms and Conditions Modal (Términos y Condiciones) -->
+  <div class="modal-overlay hidden" id="terms-modal" style="z-index: 10100;">
+    <div class="modal-container" style="width: 600px; height: auto; max-height: 90vh; align-self: center; background: #13131a; border: 1px solid #2a2a35; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden;">
+      <div class="modal-header" style="border-bottom: 1px solid #1e1e27; padding: 12px 16px;">
+        <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; margin: 0;"><i data-lucide="shield-check" style="color: #a855f7;"></i> Términos y Condiciones</h2>
+        <button class="btn-icon" id="btn-close-terms-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body scrollable" style="padding: 20px; color: #d1d5db; display: block; overflow-y: auto; max-height: 60vh; font-size: 12px; line-height: 1.6; text-align: justify;">
+        <h3 style="font-size: 14px; color: #fff; margin: 0 0 10px 0; font-weight: 700;">TÉRMINOS Y CONDICIONES DE USO Y LICENCIA DE STREAMSTUDIO</h3>
+        <p style="color: #9ca3af; margin-bottom: 15px;">Última actualización: 28 de Junio de 2026</p>
+        
+        <h4 style="color: #fff; font-size: 13px; margin: 15px 0 5px 0; font-weight: 600;">1. Aceptación del Acuerdo</h4>
+        <p>Al descargar, instalar o utilizar el software StreamStudio ("el Software"), usted acepta someterse incondicionalmente a los presentes Términos y Condiciones. Si no está de acuerdo con alguna de las cláusulas, no instale ni utilice la aplicación de ninguna manera.</p>
+        
+        <h4 style="color: #fff; font-size: 13px; margin: 15px 0 5px 0; font-weight: 600;">2. Concesión de Licencia de Uso</h4>
+        <p>StreamStudio le otorga una licencia personal, no exclusiva, intransferible y limitada para instalar y ejecutar el Software en sus dispositivos compatibles con el único propósito de producir transmisiones en vivo y grabaciones de contenido multimedia.</p>
+        
+        <h4 style="color: #fff; font-size: 13px; margin: 15px 0 5px 0; font-weight: 600;">3. Restricciones de Modificación y Desencriptación</h4>
+        <p><strong>PROHIBICIÓN ABSOLUTA:</strong> Usted se compromete a no realizar ingeniería inversa, descompilar, desensamblar, desencriptar, ni intentar de ninguna forma obtener acceso al código fuente del Software. El Software se entrega en binario protegido y encriptado para preservar su integridad de seguridad. Cualquier intento de violar la seguridad, inyectar código malicioso, interceptar sus llamadas internas o alterar la funcionalidad del Software resultará en la terminación automática de su licencia y podrá dar lugar a acciones legales por violación de propiedad intelectual.</p>
+        
+        <h4 style="color: #fff; font-size: 13px; margin: 15px 0 5px 0; font-weight: 600;">4. Normas de Conducta en la Transmisión (Twitch, YouTube, Kick)</h4>
+        <p>Usted es el único responsable del contenido audiovisual que transmita o grabe utilizando el Software. Se compromete a cumplir de forma estricta las normas comunitarias, directrices de contenido y términos de servicio de las respectivas plataformas a las que dirija su emisión:</p>
+        <ul>
+          <li>No transmitir material con derechos de autor sin la autorización debida (música licenciada, películas, etc.).</li>
+          <li>No difundir contenido violento, pornográfico, difamatorio, acosador o que fomente el odio y la discriminación.</li>
+          <li>No utilizar bots de chat o herramientas automatizadas (incluyendo el chatbot de voz) para acosar a usuarios o violar la privacidad de terceros.</li>
+        </ul>
+        
+        <h4 style="color: #fff; font-size: 13px; margin: 15px 0 5px 0; font-weight: 600;">5. Exclusión de Garantías y Limitación de Responsabilidad</h4>
+        <p>El Software se proporciona "tal cual" y "según disponibilidad", sin garantías de ningún tipo, ya sean expresas o implícitas. StreamStudio no garantiza que el funcionamiento sea ininterrumpido o libre de errores de red en las plataformas externas de streaming. En ningún caso StreamStudio será responsable de daños directos, indirectos, especiales o incidentales, incluyendo pérdida de ingresos, caídas del canal o suspensión de cuentas de usuario resultantes del uso o la imposibilidad de uso del Software.</p>
+        
+        <h4 style="color: #fff; font-size: 13px; margin: 15px 0 5px 0; font-weight: 600;">6. Privacidad y Seguridad de Datos</h4>
+        <p>El Software almacena de forma local en su dispositivo todas las configuraciones privadas, incluyendo las llaves de transmisión y tokens de autenticación OAuth de Twitch. El Software no envía ni transmite estos datos a ningún servidor externo que no sean las API y endpoints oficiales de transmisión de Twitch, YouTube o Kick de forma segura mediante HTTPS / SSL y RTMP cifrado.</p>
+        
+        <h4 style="color: #fff; font-size: 13px; margin: 15px 0 5px 0; font-weight: 600;">7. Modificaciones a los Términos</h4>
+        <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. El uso continuado del Software constituirá su aceptación de los términos revisados.</p>
+      </div>
+      <div class="modal-footer" style="padding: 12px 16px; border-top: 1px solid #1e1e27; display: flex; justify-content: flex-end; height: auto;">
+        <button class="btn btn-primary btn-sm" id="btn-terms-accept">Entendido y Acepto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App logic entry script -->
+  <script src="js/chat-simulator.js"></script>
+  <script src="js/settings-manager.js"></script>
+  <script src="js/canvas-composer.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
