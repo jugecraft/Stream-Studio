@@ -96,14 +96,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const fallbackReleases = [
     {
-      name: "StreamStudio v1.0.0 - Production Release",
-      tag_name: "v1.0.0",
-      published_at: "2026-06-29T03:58:11Z",
+      name: "StreamStudio v1.0.6 - Production Release",
+      tag_name: "v1.0.6",
+      published_at: "2026-07-01T17:00:00Z",
       body: `### 🌟 Características Destacadas
-* **Lienzo Interactivo (60 FPS)**: Composición fluida con arrastre y redimensionado de cámaras/pantallas.
-* **Mezclador de Audio DSP**: Faders, mutes, puerta de ruido, compresores y ecualizador de 3 bandas.
-* **Seguridad Incorporada**: Chromium DevTools bloqueado en producción para evitar modificaciones no deseadas.
-* **Aceleración por Hardware**: Soporte integrado para NVIDIA NVENC y AMD AMF en codificación de transmisiones.`,
+* **Audio de Escritorio Real**: Captura el sonido del sistema en directo sin simular ruido.
+* **Guardado Local Seguro**: Grabación local directa a la ruta del disco configurada por el usuario.
+* **Atajos de Teclado Persistentes**: Guarda la configuración de atajos entre reinicios del sistema.
+* **Escalado de Video Activo**: Optimización de resolución de salida en FFmpeg.`,
       assets: [
         {
           name: "Descargar instalador (Windows)",
@@ -219,6 +219,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Dynamically update download links in hero and header CTA to point to the absolute latest binary
         const latestRelease = data[0];
+        
+        // Update version badges dynamically
+        const badge = document.getElementById('hero-version-badge');
+        if (badge) {
+          badge.innerHTML = `<span class="badge-dot"></span> Nueva Versión Stable ${latestRelease.tag_name} Disponible`;
+        }
+        const mockupTitle = document.getElementById('mockup-version-title');
+        if (mockupTitle) {
+          mockupTitle.textContent = `StreamStudio ${latestRelease.tag_name} - Escena Activa: Juego Completo`;
+        }
+
         const setupAsset = latestRelease.assets.find(a => a.name.endsWith('.exe'));
         if (setupAsset) {
           const ctaButtons = document.querySelectorAll('.nav-cta, .hero-actions .btn-primary');
